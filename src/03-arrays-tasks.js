@@ -517,8 +517,20 @@ function distinct(arr) {
  *    "Poland" => ["Lodz"]
  *   }
  */
-function group(/* array, keySelector, valueSelector */) {
-  throw new Error('Not implemented');
+function group(array, keySelector, valueSelector) {
+  const arrayFirstItems = array.map(keySelector);
+  const arraySecondItems = array.map(valueSelector);
+  const dArray = arrayFirstItems.map((value, index) => [value, arraySecondItems[index]]);
+  const mappedArray = dArray.reduce((acc, cur) => {
+    const [key, value] = cur;
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(value);
+    return acc;
+  }, {});
+  const map = new Map(Object.entries(mappedArray));
+  return map;
 }
 
 /**
@@ -534,8 +546,10 @@ function group(/* array, keySelector, valueSelector */) {
  *   [[1, 2], [3, 4], [5, 6]], (x) => x     =>   [ 1, 2, 3, 4, 5, 6 ]
  *   ['one','two','three'], (x) => x.split('')  =>   ['o','n','e','t','w','o','t','h','r','e','e']
  */
-function selectMany(/* arr, childrenSelector */) {
-  throw new Error('Not implemented');
+function selectMany(arr, childrenSelector) {
+  const operatedArray = arr.map(childrenSelector);
+  const flattedArray = operatedArray.flat();
+  return flattedArray;
 }
 
 /**
@@ -550,8 +564,13 @@ function selectMany(/* arr, childrenSelector */) {
  *   ['one','two','three'], [2]       => 'three'  (arr[2])
  *   [[[ 1, 2, 3]]], [ 0, 0, 1 ]      => 2        (arr[0][0][1])
  */
-function getElementByIndexes(/* arr, indexes */) {
-  throw new Error('Not implemented');
+function getElementByIndexes(arr, indexes) {
+  let newArr = arr.slice();
+  indexes.map((value) => {
+    newArr = newArr[value];
+    return newArr;
+  });
+  return newArr;
 }
 
 /**
@@ -572,8 +591,29 @@ function getElementByIndexes(/* arr, indexes */) {
  *   [ 1, 2, 3, 4, 5, 6, 7, 8 ]   =>  [ 5, 6, 7, 8, 1, 2, 3, 4 ]
  *
  */
-function swapHeadAndTail(/* arr */) {
-  throw new Error('Not implemented');
+function swapHeadAndTail(arr) {
+  let mid;
+  let head;
+  let tail;
+  const result = [];
+  if (arr.length === 1) {
+    return arr;
+  }
+  if (arr.length % 2 === 0) {
+    mid = null;
+  } else {
+    mid = Math.floor(arr.length / 2);
+  }
+  if (mid !== null) {
+    head = arr.slice(0, mid);
+    tail = arr.slice(mid + 1);
+    result.push(...tail, arr[mid], ...head);
+  } else {
+    head = arr.slice(0, (arr.length / 2));
+    tail = arr.slice(arr.length / 2);
+    result.push(...tail, ...head);
+  }
+  return result;
 }
 
 module.exports = {
