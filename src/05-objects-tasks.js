@@ -23,7 +23,7 @@
 function Rectangle(width, height) {
   this.width = width;
   this.height = height;
-  this.getArea = function () {
+  this.getArea = function area() {
     return width * height;
   };
 }
@@ -121,36 +121,48 @@ const cssSelectorBuilder = {
   element(value) {
     const selectorObj = Object.create(cssSelectorBuilder);
     selectorObj.selector = `${this.selector}${value}`;
+    selectorObj.methodId = 0;
+    this.checkErrors(selectorObj.methodId);
     return selectorObj;
   },
 
   id(value) {
     const selectorObj = Object.create(cssSelectorBuilder);
     selectorObj.selector = `${this.selector}#${value}`;
+    selectorObj.methodId = 1;
+    this.checkErrors(selectorObj.methodId);
     return selectorObj;
   },
 
   class(value) {
     const selectorObj = Object.create(cssSelectorBuilder);
     selectorObj.selector = `${this.selector}.${value}`;
+    selectorObj.methodId = 2;
+    this.checkErrors(selectorObj.methodId);
     return selectorObj;
   },
 
   attr(value) {
     const selectorObj = Object.create(cssSelectorBuilder);
     selectorObj.selector = `${this.selector}[${value}]`;
+    selectorObj.methodId = 3;
+    this.checkErrors(selectorObj.methodId);
     return selectorObj;
   },
 
   pseudoClass(value) {
     const selectorObj = Object.create(cssSelectorBuilder);
     selectorObj.selector = `${this.selector}:${value}`;
+    selectorObj.methodId = 4;
+    this.checkErrors(selectorObj.methodId);
     return selectorObj;
   },
 
   pseudoElement(value) {
     const selectorObj = Object.create(cssSelectorBuilder);
     selectorObj.selector = `${this.selector}::${value}`;
+    selectorObj.methodId = 5;
+    this.checkErrors(selectorObj.methodId);
     return selectorObj;
   },
 
@@ -162,6 +174,17 @@ const cssSelectorBuilder = {
 
   stringify() {
     return this.selector;
+  },
+
+  checkErrors(id) {
+    if (id === this.methodId) {
+      if (id === 0 || id === 1 || id === 5) {
+        throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+      }
+    }
+    if (id < this.methodId) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
   },
 };
 
